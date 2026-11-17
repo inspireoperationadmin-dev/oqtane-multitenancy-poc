@@ -14,7 +14,7 @@ A comprehensive architectural and implementation guide for deploying **Oqtane Fr
 7. [Task 6: Installing New Modules and Themes](#7-task-6-installing-new-modules-and-themes)
 8. [Task 7: Tenant-Specific Background Worker (Job Scheduler)](#8-task-7-tenant-specific-background-worker-job-scheduler)
 9. [Task 8: Tenant-Restricted REST API with Isolated Data Access](#9-task-8-tenant-restricted-rest-api-with-isolated-data-access)
-10. [Client Communication Guide (Tamil / Tanglish / English)](#10-client-communication-guide-tamil--tanglish--english)
+10. [Enterprise Architecture Summary & Key Takeaways](#10-enterprise-architecture-summary--key-takeaways)
 
 ---
 
@@ -648,42 +648,24 @@ public class TenantRestrictedApiController : Controller
 
 ---
 
-## 10. Client Communication Guide (Tamil / Tanglish / English)
+## 10. Enterprise Architecture Summary & Key Takeaways
 
-> [!NOTE] Client Inquiry: *"tamil la continue pannalam what is client asks?"*
-> **Answer**: **Yes, absolutely!** If the client prefers Tamil or Tanglish, we can seamlessly deliver all explanations, demonstrations, documentation, and stakeholder meetings in Tamil/Tanglish.
+### Core Architectural Pillars Delivered
 
-### Key Concepts Explained in Tamil / Tanglish (Client Pitch Deck)
+#### 1. Multi-Tenancy Architecture (Physical Database Isolation)
+Each tenant operates on its own dedicated database (`Oqtane_Master`, `Oqtane_Tenant2`, `Oqtane_Tenant3`). Tenant 1's business data is physically isolated from Tenant 2 and Tenant 3, guaranteeing total regulatory compliance, airtight data privacy, and zero risk of cross-tenant data leakage.
 
-#### 1. Multi-Tenancy Architecture (தனித்தனி தரவுத்தளங்கள் / Separate Databases)
-> **English**: "Each tenant operates on its own dedicated database. Tenant 1's data is physically separated from Tenant 2 and Tenant 3, guaranteeing total compliance and data privacy."
->
-> **Tamil / Tanglish**:
-> *"நம்ம Oqtane Architecture-ல ஒவ்வொரு Client-க்கும் (Tenant) தனித்தனியான Database (`Oqtane_Tenant1`, `Oqtane_Tenant2`) create பண்ணியிருக்கோம். இதனால ஒரு Tenant-ஓட Data இன்னொரு Tenant-க்கு Leak ஆக வாய்ப்பே இல்லை (100% Data Isolation). Request வரும்போதே URL Alias வச்சு சிஸ்டம் தானாகவே சரியான Database-ஐ connect பண்ணிக்கும்."*
+#### 2. Module Development & Table Isolation
+Each business module generates its own isolated tables within the corresponding tenant's database. The `ProductCatalog_Item` table exists exclusively in Tenant 1, `HelpDesk_Ticket` exists exclusively in Tenant 2, and `CustomerFeedback_Entry` exists exclusively in Tenant 3. Databases remain clean and unpolluted by unassigned modules.
 
-#### 2. Module Development & Table Isolation (தனித்தனி மாட்யூல்கள் & அட்டவணைகள்)
-> **English**: "Each module generates its own tables in the corresponding tenant's database. ProductCatalog tables exist only in Tenant 1, HelpDesk in Tenant 2, and CustomerFeedback in Tenant 3."
->
-> **Tamil / Tanglish**:
-> *"மூன்று வெவ்வேறான Modules டெவலப் பண்ணியிருக்கோம். Tenant 1-க்கு `ProductCatalog_Item` table, Tenant 2-க்கு `HelpDesk_Ticket` table, Tenant 3-க்கு `CustomerFeedback_Entry` table. எந்த Module எந்த Tenant-க்கு தேவையோ அது மட்டும் அங்கே Install ஆகும். மத்த Tenant databases சுத்தமா (clean-ஆ) இருக்கும்."*
+#### 3. Automatic Table Creation & Migration Rollout
+When a new tenant is provisioned, Oqtane runs EF Core migrations automatically upon first module placement, creating all required tables with zero manual SQL scripting. When an existing module schema is modified, application restart rolls out incremental migrations across all registered tenant databases automatically.
 
-#### 3. Automatic Table Creation & Migration Rollout (புதிய Tenant & தானியங்கி அப்டேட்)
-> **English**: "When a new tenant is created, Oqtane runs EF Core migrations automatically to provision all module tables. When a module is updated, migrations apply across all tenant databases on restart."
->
-> **Tamil / Tanglish**:
-> *"நாளைக்கு புதுசா ஒரு Tenant (Tenant 4) create பண்ணினா கூட, நம்ம Module-ஐ add பண்ணின உடனேயே Database Tables ஆட்டோமேட்டிக்கா create ஆகிடும் (Automatic Schema Migration). அதே மாதிரி Module-ல ஏதாச்சும் புது Column சேர்த்தா, Server restart ஆகும்போது எல்லா Tenant databases-லயும் அந்த மாற்றங்கள் தானாகவே push ஆகிடும்."*
+#### 4. Safe Oqtane Framework Upgrades
+Core Oqtane assemblies (`Oqtane.Server.dll`, etc.) are completely decoupled from custom business modules and custom themes. Upgrading the Oqtane Framework updates only core CMS tables and framework binaries, leaving custom business code, database tables, and theme designs untouched.
 
-#### 4. Oqtane Upgrades without Overriding (System Upgrade பாதுகாப்பு)
-> **English**: "Core Oqtane assemblies are decoupled from custom modules and themes. Upgrading Oqtane updates only framework components, leaving your business logic and tables untouched."
->
-> **Tamil / Tanglish**:
-> *"Oqtane Framework-ஐ future-ல புதிய version-க்கு upgrade பண்ணினாலும், நம்ம Custom Modules, Themes, மற்றும் Database Tables எக்காரணத்தை கொண்டும் override ஆகாது. Core Framework தனியா, Custom Business Code தனியா decoupled-ஆ இருக்கிறதால upgrade process ரொம்ப safe."*
-
-#### 5. Background Worker & API Restriction (தனிப்பட்ட பேக்கிரவுண்ட் & API பாதுகாப்பு)
-> **English**: "Background workers and REST APIs can be locked to a specific tenant. Non-target tenant calls are blocked with 403 Forbidden, and DB contexts are strictly isolated."
->
-> **Tamil / Tanglish**:
-> *"Background Worker ஒரு குறிப்பிட்ட Tenant-க்கு மட்டும் இயங்கும் (Tenant Guard). அதே மாதிரி REST API-களும் Tenant 1-க்கு மட்டும்தான் access ஆகும்; Tenant 2 அல்லது 3 வழியா யாராச்சும் call பண்ணினா உடனடியாக `403 Forbidden` error வந்து Block ஆகிடும்."*
+#### 5. Background Worker & API Restriction
+Background workers and REST APIs can be strictly locked to specific tenants using the Tenant Guard pattern and custom action filters. Unauthorized cross-tenant API requests are immediately rejected with `403 Forbidden`, and EF Core DbContexts are dynamically bound only to the caller's authorized connection string.
 
 ---
 
