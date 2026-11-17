@@ -1,0 +1,64 @@
+@namespace OqtanePoc.Modules.CustomerFeedback
+@inherits ModuleBase
+@inject ICustomerFeedbackService CustomerFeedbackService
+
+<div class="card shadow-sm p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="text-success mb-0">Customer Feedback & Surveys (Tenant 3)</h4>
+        <span class="badge bg-success">Tenant 3 Isolated Database Active</span>
+    </div>
+    <p class="text-muted">Stored exclusively in Tenant 3's isolated database table (<code>CustomerFeedback_Entry</code>).</p>
+    
+    @if (_feedbacks == null)
+    {
+        <p><em>Loading customer feedbacks...</em></p>
+    }
+    else if (_feedbacks.Count == 0)
+    {
+        <div class="alert alert-info">No customer feedback entries found in this tenant database.</div>
+    }
+    else
+    {
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Customer Email</th>
+                    <th>Rating</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var feedback in _feedbacks)
+                {
+                    <tr>
+                        <td><strong>@feedback.CustomerEmail</strong></td>
+                        <td>
+                            @for (int i = 0; i < feedback.Rating; i++)
+                            {
+                                <span class="text-warning">&#9733;</span>
+                            }
+                        </td>
+                        <td>@feedback.Comments</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    private List<CustomerFeedbackEntry> _feedbacks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _feedbacks = await CustomerFeedbackService.GetFeedbacksAsync(ModuleState.ModuleId);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Feedbacks {Error}", ex.Message);
+            _feedbacks = new List<CustomerFeedbackEntry>();
+        }
+    }
+}

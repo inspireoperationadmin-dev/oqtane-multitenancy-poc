@@ -1,0 +1,61 @@
+@namespace OqtanePoc.Modules.HelpDesk
+@inherits ModuleBase
+@inject IHelpDeskService HelpDeskService
+
+<div class="card shadow-sm p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="text-danger mb-0">Help Desk Support Tickets (Tenant 2)</h4>
+        <span class="badge bg-danger">Tenant 2 Isolated Database Active</span>
+    </div>
+    <p class="text-muted">Stored exclusively in Tenant 2's isolated database table (<code>HelpDesk_Ticket</code>).</p>
+    
+    @if (_tickets == null)
+    {
+        <p><em>Loading tickets...</em></p>
+    }
+    else if (_tickets.Count == 0)
+    {
+        <div class="alert alert-info">No support tickets found in this tenant database.</div>
+    }
+    else
+    {
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Ticket #</th>
+                    <th>Subject</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ticket in _tickets)
+                {
+                    <tr>
+                        <td><strong>@ticket.TicketNumber</strong></td>
+                        <td>@ticket.Subject</td>
+                        <td><span class="badge bg-warning text-dark">@ticket.Priority</span></td>
+                        <td><span class="badge bg-info text-dark">@ticket.Status</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    private List<HelpDeskTicket> _tickets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _tickets = await HelpDeskService.GetTicketsAsync(ModuleState.ModuleId);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Tickets {Error}", ex.Message);
+            _tickets = new List<HelpDeskTicket>();
+        }
+    }
+}

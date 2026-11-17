@@ -1,0 +1,72 @@
+## Visual Studio and .NET Core Build Artifacts
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]rms/
+[Aa]rm64/
+bld/
+[Bb]uild/
+
+## Visual Studio Cache and Preferences
+.vs/
+.vscode/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.sln.docstates
+*.pidb
+*.booproj
+
+## Database, Log, and Backup Files
+*.log
+*.bak
+*.mdf
+*.ldf
+*.db
+*.sqlite
+*.sqlite3
+
+## Test Results and Temp Files
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.wixobj
+*.wixpdb
+*.opensdf
+*.sdf
+
+## NuGet Packaging Residuals
+*.p7s
+\[Content_Types\].xml
+_rels/
+package/
+
+## OS Generated Files
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+.DS_Store

@@ -1,0 +1,27 @@
+## Oqtane Ignore
+.vs/
+bin/
+obj/
+*.user
+artifacts/
+msbuild.binlog
+.vscode/
+*.binlog
+*.nupkg
+*.zip
+*.p7s
+
+*.idea
+_ReSharper.Caches
+.DS_Store
+
+Server/Data
+Server/Properties/PublishProfiles/FolderProfile.pubxml
+Server/Content
+Server/Content/Log
+Server/Packages
+Server/wwwroot/Content
+Server/wwwroot/Packages/*.log
+
+Server/wwwroot/_content/*
+!Server/wwwroot/_content/Placeholder.txt

@@ -1,0 +1,48 @@
+@namespace OqtanePoc.Themes.EnterpriseModernTheme
+@inherits ThemeBase
+@inject ISettingService SettingService
+
+<header class="enterprise-header bg-dark text-white py-3 border-bottom shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <span class="fs-4 fw-bold text-primary me-3">Enterprise POC Portal</span>
+            <span class="badge bg-warning text-dark">Tenant 1 Exclusive Theme</span>
+        </div>
+        <div class="controls ms-auto">
+            <div class="controls-group d-flex align-items-center">
+                <UserProfile ShowRegister="true" />
+                <Login ShowLogin="true" />
+                <ControlPanel ButtonClass="btn-outline-light ms-2" />
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="enterprise-main py-4 bg-light min-vh-100">
+    <div class="container">
+        <!-- Admin Pane -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <Pane Name="@PaneNames.Admin" />
+            </div>
+        </div>
+
+        <!-- Main Content Pane -->
+        <div class="row">
+            <div class="col-12">
+                <Pane Name="Content" />
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="enterprise-footer bg-white border-top py-3 text-center text-muted">
+    <div class="container">
+        <small>&copy; @DateTime.UtcNow.Year Enterprise Multi-Tenant Architecture POC. Isolated Database Execution.</small>
+    </div>
+</footer>
+
+@code {
+    public override string Name => "Enterprise Modern Theme - Default";
+    public override string Panes => PaneNames.Admin + ",Content";
+}
